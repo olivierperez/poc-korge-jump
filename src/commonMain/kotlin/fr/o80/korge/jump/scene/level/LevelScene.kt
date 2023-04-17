@@ -7,6 +7,8 @@ import com.soywiz.korge.input.*
 import com.soywiz.korge.scene.*
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.*
+import com.soywiz.korim.format.*
+import com.soywiz.korio.file.std.*
 import com.soywiz.korma.geom.*
 import fr.o80.korge.jump.scene.entity.*
 import org.jbox2d.dynamics.*
@@ -29,10 +31,32 @@ class LevelScene : Scene() {
         }
     }
 
-    private fun Container.createPlayer(): Player {
-        val playerView = solidRect(10, 15, Colors.BLUE)
-            .anchor(.5, .5)
-            .position(20, -150)
+    private suspend fun Container.createPlayer(): Player {
+        val spriteMap = resourcesVfs["Pink_Monster_Run.png"].readBitmap(PNG)
+        val runRight = SpriteAnimation(
+            spriteMap,
+            spriteWidth = 19,
+            spriteHeight = 27,
+            rows = 1,
+            columns = 6,
+            marginTop = 4,
+            marginLeft = 7,
+            offsetBetweenColumns = 13,
+        )
+        val runLeft = SpriteAnimation(
+            spriteMap,
+            spriteWidth = 19,
+            spriteHeight = 27,
+            rows = 1,
+            columns = 6,
+            marginTop = 36,
+            marginLeft = 7,
+            offsetBetweenColumns = 13,
+        )
+        val playerView = sprite(runRight) {
+            position(20, -150)
+        }
+        playerView.playAnimationLooped(spriteDisplayTime = 100.milliseconds)
 
         val body = createBody {
             this.type = BodyType.DYNAMIC
@@ -64,7 +88,8 @@ class LevelScene : Scene() {
             FixtureDef().apply {
                 this.shape = BoxShape(
                     playerRect.copy(
-                        y = playerRect.y + playerRect.height, height = playerRect.height * .02)
+                        y = playerRect.y + playerRect.height, height = playerRect.height * .02
+                    )
                 )
 
                 this.isSensor = true
@@ -78,7 +103,9 @@ class LevelScene : Scene() {
 
         return Player(
             main = playerView,
-            foot = foot
+            foot = foot,
+            runLeft = runLeft,
+            runRight = runRight
         )
     }
 
@@ -137,7 +164,7 @@ class LevelScene : Scene() {
             width = 100,
             height = 10,
             x = -150,
-            y = -40
+            y = -70
         )
 
         Floor.createIn(
@@ -145,7 +172,7 @@ class LevelScene : Scene() {
             width = 100,
             height = 10,
             x = -200,
-            y = -70
+            y = -130
         )
     }
 }

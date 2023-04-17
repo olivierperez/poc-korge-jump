@@ -13,13 +13,16 @@ import kotlin.math.*
 // https://www.iforce2d.net/b2dtut/constant-speed
 // https://www.iforce2d.net/b2dtut/user-data
 class Player(
-    main: View,
+    private val main: Sprite,
     private val foot: Fixture,
-    private val jumpForce: Float = 9f,
+    private val jumpForce: Float = 12f,
     private val maxSpeed: Float = 5f,
     private val acceleration: Float = .2f,
     private val deceleration: Float = .08f,
-    private val maxJump: Int = 2
+    private val maxJump: Int = 2,
+    private val runLeft: SpriteAnimation,
+    private val runRight: SpriteAnimation,
+//    private val sprite: Sprite
 ) : Entity {
 
     override val layer: Layer = Layer.PLAYER
@@ -80,6 +83,16 @@ class Player(
             }
         } else {
             jumping = true
+        }
+
+        updateSprite()
+    }
+
+    private fun updateSprite() {
+        if (mainBody.linearVelocityX < 0) {
+            main.playAnimationLooped(spriteAnimation = runLeft)
+        } else if (mainBody.linearVelocityX > 0) {
+            main.playAnimationLooped(spriteAnimation = runRight)
         }
     }
 }
