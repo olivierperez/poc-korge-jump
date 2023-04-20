@@ -20,9 +20,9 @@ class Player(
     private val acceleration: Float = .2f,
     private val deceleration: Float = .08f,
     private val maxJump: Int = 2,
-    private val runLeft: SpriteAnimation,
-    private val runRight: SpriteAnimation,
-//    private val sprite: Sprite
+    private val runSprites: Sprites,
+    private val idleSprites: Sprites,
+    private val jumpSprites: Sprites,
 ) : Entity {
 
     override val layer: Layer = Layer.PLAYER
@@ -89,10 +89,42 @@ class Player(
     }
 
     private fun updateSprite() {
-        if (mainBody.linearVelocityX < 0) {
-            main.playAnimationLooped(spriteAnimation = runLeft)
-        } else if (mainBody.linearVelocityX > 0) {
-            main.playAnimationLooped(spriteAnimation = runRight)
+        when {
+            jumping && mainBody.linearVelocityX < 0 ->
+                main.playAnimationLooped(
+                    spriteAnimation = jumpSprites.left,
+                    spriteDisplayTime = jumpSprites.timeSpan
+                )
+
+            jumping && mainBody.linearVelocityX > 0 ->
+                main.playAnimationLooped(
+                    spriteAnimation = jumpSprites.right,
+                    spriteDisplayTime = jumpSprites.timeSpan
+                )
+
+            mainBody.linearVelocityX < -.45 ->
+                main.playAnimationLooped(
+                    spriteAnimation = runSprites.left,
+                    spriteDisplayTime = runSprites.timeSpan
+                )
+
+            mainBody.linearVelocityX > .45 ->
+                main.playAnimationLooped(
+                    spriteAnimation = runSprites.right,
+                    spriteDisplayTime = runSprites.timeSpan
+                )
+
+            mainBody.linearVelocityX < 0 ->
+                main.playAnimationLooped(
+                    spriteAnimation = idleSprites.left,
+                    spriteDisplayTime = idleSprites.timeSpan
+                )
+
+            mainBody.linearVelocityX > 0 ->
+                main.playAnimationLooped(
+                    spriteAnimation = idleSprites.right,
+                    spriteDisplayTime = idleSprites.timeSpan
+                )
         }
     }
 }

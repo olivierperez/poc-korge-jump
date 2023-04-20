@@ -32,28 +32,10 @@ class LevelScene : Scene() {
     }
 
     private suspend fun Container.createPlayer(): Player {
-        val spriteMap = resourcesVfs["Pink_Monster_Run.png"].readBitmap(PNG)
-        val runRight = SpriteAnimation(
-            spriteMap,
-            spriteWidth = 19,
-            spriteHeight = 27,
-            rows = 1,
-            columns = 6,
-            marginTop = 4,
-            marginLeft = 7,
-            offsetBetweenColumns = 13,
-        )
-        val runLeft = SpriteAnimation(
-            spriteMap,
-            spriteWidth = 19,
-            spriteHeight = 27,
-            rows = 1,
-            columns = 6,
-            marginTop = 36,
-            marginLeft = 7,
-            offsetBetweenColumns = 13,
-        )
-        val playerView = sprite(runRight) {
+        val runSprites = loadRunSprites()
+        val idleSprites = loadIdleSprites()
+        val jumpSprites = loadJumpSprites()
+        val playerView = sprite(idleSprites.right) {
             position(20, -150)
         }
         playerView.playAnimationLooped(spriteDisplayTime = 100.milliseconds)
@@ -104,9 +86,85 @@ class LevelScene : Scene() {
         return Player(
             main = playerView,
             foot = foot,
-            runLeft = runLeft,
-            runRight = runRight
+            runSprites = runSprites,
+            idleSprites = idleSprites,
+            jumpSprites = jumpSprites,
         )
+    }
+
+    private suspend fun loadRunSprites(): Sprites {
+        val spriteMap = resourcesVfs["Pink_Monster_Run.png"].readBitmap(PNG)
+        val runLeft = SpriteAnimation(
+            spriteMap,
+            spriteWidth = 20,
+            spriteHeight = 29,
+            rows = 1,
+            columns = 6,
+            marginTop = 34,
+            marginLeft = 6,
+            offsetBetweenColumns = 12,
+        )
+        val runRight = SpriteAnimation(
+            spriteMap,
+            spriteWidth = 20,
+            spriteHeight = 29,
+            rows = 1,
+            columns = 6,
+            marginTop = 2,
+            marginLeft = 6,
+            offsetBetweenColumns = 12,
+        )
+        return Sprites(runLeft, runRight, 100.milliseconds)
+    }
+
+    private suspend fun loadIdleSprites(): Sprites {
+        val spriteMap = resourcesVfs["Pink_Monster_Idle.png"].readBitmap(PNG)
+        val idleLeft = SpriteAnimation(
+            spriteMap,
+            spriteWidth = 20,
+            spriteHeight = 29,
+            rows = 1,
+            columns = 4,
+            marginTop = 35,
+            marginLeft = 5,
+            offsetBetweenColumns = 12,
+        )
+        val idleRight = SpriteAnimation(
+            spriteMap,
+            spriteWidth = 20,
+            spriteHeight = 29,
+            rows = 1,
+            columns = 4,
+            marginTop = 3,
+            marginLeft = 5,
+            offsetBetweenColumns = 12,
+        )
+        return Sprites(idleLeft, idleRight, 200.milliseconds)
+    }
+
+    private suspend fun loadJumpSprites(): Sprites {
+        val spriteMap = resourcesVfs["Pink_Monster_Jump.png"].readBitmap(PNG)
+        val jumpLeft = SpriteAnimation(
+            spriteMap,
+            spriteWidth = 20,
+            spriteHeight = 29,
+            rows = 1,
+            columns = 2,
+            marginTop = 35,
+            marginLeft = 5,
+            offsetBetweenColumns = 12,
+        )
+        val jumpRight = SpriteAnimation(
+            spriteMap,
+            spriteWidth = 20,
+            spriteHeight = 29,
+            rows = 1,
+            columns = 2,
+            marginTop = 3,
+            marginLeft = 5,
+            offsetBetweenColumns = 12,
+        )
+        return Sprites(jumpLeft, jumpRight, 150.milliseconds)
     }
 
     override suspend fun SContainer.sceneInit() {
