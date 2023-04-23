@@ -5,7 +5,7 @@ import com.soywiz.korge.view.*
 import com.soywiz.korim.color.*
 import org.jbox2d.dynamics.*
 
-class Floor private constructor(
+class Block private constructor(
     view: View
 ) : Entity {
 
@@ -16,8 +16,8 @@ class Floor private constructor(
     }
 
     companion object {
-        fun createIn(container: Container, width: Int, height: Int, x: Int, y: Int): Floor {
-            return Floor(
+        fun createIn(container: Container, width: Int, height: Int, x: Int, y: Int): Block {
+            return Block(
                 container.solidRect(width, height, Colors.DARKGRAY)
                     .anchor(.5, .5)
                     .position(x, y)

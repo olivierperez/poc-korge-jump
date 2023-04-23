@@ -36,8 +36,8 @@ class Player(
     private var jumping: Boolean = false
 
     init {
-        mainBody.userData = this
-        foot.userData = this
+        mainBody.userData = UserData(this, "MAIN")
+        foot.userData = UserData(this, "FOOT")
     }
 
     fun jump() {
@@ -75,11 +75,15 @@ class Player(
         mainBody.applyLinearImpulse(Vec2(impulse, 0f), mainBody.worldCenter, true)
 
         val contact = foot.getBody()?.getContactList()
-        if (contact != null && contact.other?.userData is Floor) {
-            if (jumping) {
-                jumping = false
-                remainingJumps = maxJump
-                println("reset jumps")
+        if (contact != null) {
+            val userDataA = contact.contact?.getFixtureA()?.userData as? UserData
+            val userDataB = contact.contact?.getFixtureB()?.userData as? UserData
+            if (contact.other?.userData is Block && (userDataA?.fixture == "FOOT" || userDataB?.fixture == "FOOT")) {
+                if (jumping) {
+                    jumping = false
+                    remainingJumps = maxJump
+                    println("reset jumps")
+                }
             }
         } else {
             jumping = true
