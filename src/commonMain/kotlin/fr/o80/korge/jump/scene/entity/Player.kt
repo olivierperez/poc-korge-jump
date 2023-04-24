@@ -13,7 +13,7 @@ import kotlin.math.*
 // https://www.iforce2d.net/b2dtut/constant-speed
 // https://www.iforce2d.net/b2dtut/user-data
 class Player(
-    private val main: Sprite,
+    val view: Sprite,
     private val foot: Fixture,
     private val jumpForce: Float = 12f,
     private val maxSpeed: Float = 5f,
@@ -27,7 +27,7 @@ class Player(
 
     override val layer: Layer = Layer.PLAYER
 
-    private val mainBody: Body = main.body ?: error("A main body is required")
+    private val mainBody: Body = view.body ?: error("A main body is required")
 
     private var moveState: MoveState = MoveState.STOP
 
@@ -95,37 +95,37 @@ class Player(
     private fun updateSprite() {
         when {
             jumping && mainBody.linearVelocityX < 0 ->
-                main.playAnimationLooped(
+                view.playAnimationLooped(
                     spriteAnimation = jumpSprites.left,
                     spriteDisplayTime = jumpSprites.timeSpan
                 )
 
             jumping && mainBody.linearVelocityX > 0 ->
-                main.playAnimationLooped(
+                view.playAnimationLooped(
                     spriteAnimation = jumpSprites.right,
                     spriteDisplayTime = jumpSprites.timeSpan
                 )
 
             mainBody.linearVelocityX < -.45 ->
-                main.playAnimationLooped(
+                view.playAnimationLooped(
                     spriteAnimation = runSprites.left,
                     spriteDisplayTime = runSprites.timeSpan
                 )
 
             mainBody.linearVelocityX > .45 ->
-                main.playAnimationLooped(
+                view.playAnimationLooped(
                     spriteAnimation = runSprites.right,
                     spriteDisplayTime = runSprites.timeSpan
                 )
 
             mainBody.linearVelocityX < 0 ->
-                main.playAnimationLooped(
+                view.playAnimationLooped(
                     spriteAnimation = idleSprites.left,
                     spriteDisplayTime = idleSprites.timeSpan
                 )
 
             mainBody.linearVelocityX > 0 ->
-                main.playAnimationLooped(
+                view.playAnimationLooped(
                     spriteAnimation = idleSprites.right,
                     spriteDisplayTime = idleSprites.timeSpan
                 )

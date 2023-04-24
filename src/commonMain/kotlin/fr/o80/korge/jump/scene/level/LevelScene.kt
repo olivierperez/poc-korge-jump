@@ -6,6 +6,7 @@ import com.soywiz.korge.box2d.*
 import com.soywiz.korge.input.*
 import com.soywiz.korge.scene.*
 import com.soywiz.korge.view.*
+import com.soywiz.korge.view.camera.*
 import com.soywiz.korio.file.std.*
 import fr.o80.korge.jump.scene.entity.*
 import fr.o80.korge.jump.scene.level.def.*
@@ -13,6 +14,7 @@ import fr.o80.korge.jump.scene.level.def.*
 class LevelScene : Scene() {
 
     private var player: Player? = null
+    private var cameraContainer: CameraContainer? = null
     private val playerFactory = PlayerFactory()
 
     override suspend fun SContainer.sceneMain() {
@@ -22,39 +24,44 @@ class LevelScene : Scene() {
         text("Level") {
             centerXOnStage()
         }
-        worldView {
-            position(600, 600).scale(1.5)
+        cameraContainer = cameraContainer(
+            width = 1200.0,
+            height = 600.0
+        ) {
+            worldView {
+                position(600, 600).scale(1.5)
 
-            level.layers.forEach { layer ->
-                layer.forEach { entityDef ->
-                    when (entityDef) {
-                        is PlayerDef -> {
-                            if (player != null) {
-                                error("Player should exists only once in the level")
+                level.layers.forEach { layer ->
+                    layer.forEach { entityDef ->
+                        when (entityDef) {
+                            is PlayerDef -> {
+                                if (player != null) {
+                                    error("Player should exists only once in the level")
+                                }
+                                player = playerFactory.createIn(
+                                    this,
+                                    x = entityDef.x * blockSize,
+                                    y = -entityDef.y * blockSize
+                                )
                             }
-                            player = playerFactory.createIn(
-                                this,
-                                x = entityDef.x * blockSize,
-                                y = -entityDef.y * blockSize
-                            )
-                        }
 
-                        is BlockDef -> {
-                            Block.createIn(
-                                this,
-                                width = blockSize,
-                                height = blockSize,
-                                x = entityDef.x * blockSize,
-                                y = -entityDef.y * blockSize
-                            )
+                            is BlockDef -> {
+                                Block.createIn(
+                                    this,
+                                    width = blockSize,
+                                    height = blockSize,
+                                    x = entityDef.x * blockSize,
+                                    y = -entityDef.y * blockSize
+                                )
+                            }
                         }
                     }
                 }
-            }
 
-            if (player == null) {
-                error("Player doesn't exists in the level")
             }
+        }.apply {
+            val player = player ?: error("Player doesn't exists in the level")
+            follow(player.view)
         }
     }
 

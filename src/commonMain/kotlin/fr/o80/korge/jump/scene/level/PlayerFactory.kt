@@ -68,7 +68,7 @@ class PlayerFactory {
         playerView.body = body
 
         return Player(
-            main = playerView,
+            view = playerView,
             foot = foot,
             runSprites = runSprites,
             idleSprites = idleSprites,
