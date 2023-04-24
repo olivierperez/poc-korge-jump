@@ -48,7 +48,7 @@ class LevelScene : Scene() {
                             is BlockDef -> {
                                 Block.createIn(
                                     this,
-                                    width = blockSize,
+                                    width = entityDef.width * blockSize,
                                     height = blockSize,
                                     x = entityDef.x * blockSize,
                                     y = -entityDef.y * blockSize

@@ -19,7 +19,6 @@ class Block private constructor(
         fun createIn(container: Container, width: Int, height: Int, x: Int, y: Int): Block {
             return Block(
                 container.solidRect(width, height, Colors.DARKGRAY)
-                    .anchor(.5, .5)
                     .position(x, y)
                     .registerBodyWithFixture(
                         type = BodyType.STATIC,
